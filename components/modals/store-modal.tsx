@@ -10,6 +10,7 @@ import toast from 'react-hot-toast';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
+import axios from 'axios'
 
 const formSchema = z.object({
     name:z.string().min(1),
@@ -28,9 +29,13 @@ const StoreModal = () => {
 
     const onSubmit = async (values: z.infer<typeof formSchema>) =>{
         try {
-            setLoading(true);
+            setLoading(true)
+
+            const response = await axios.post('/api/stores', values)
+            window.location.assign(`/${response.data.id}`)
+
         }catch(error){
-            toast.error("Something went wrong");
+            toast.error("Something went wrong")
         }
         finally {
             setLoading(false);
@@ -59,7 +64,9 @@ const StoreModal = () => {
                                         placeholder='E-Commerce' {...field}>
                                         </Input>
                                     </FormControl>
-                                    <FormMessage></FormMessage>
+                                    <FormMessage>
+
+                                    </FormMessage>
                                 </FormItem>
                             )}
                             />
