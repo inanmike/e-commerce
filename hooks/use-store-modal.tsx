@@ -1,4 +1,3 @@
-import exp from 'constants';
 import {create} from 'zustand'
 
 interface useStoreModalStore {
@@ -10,7 +9,5 @@ interface useStoreModalStore {
 export const useStoremodal = create<useStoreModalStore>((set)=>({
     isOpen: false,
     onOpen: () => set({isOpen: true}),
-    onClose: () => set({isOpen: false}),
-
-    
+    onClose: () => set({isOpen: false}),    
 }))

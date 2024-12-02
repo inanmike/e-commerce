@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState} from 'react'
 import {
     Command,
     CommandDialog,
@@ -18,6 +18,9 @@ import {
     Settings,
     Smile,
     User,
+    Store,
+    ChevronDown,
+    Check
   } from "lucide-react"
   import {
     Popover,
@@ -27,6 +30,8 @@ import {
 import { useStoremodal } from '@/hooks/use-store-modal';
 import { useRouter, useParams } from 'next/navigation';
 import { Button } from './ui/button'
+import { cn } from '@/lib/utils'
+
 
   type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>
 
@@ -46,14 +51,22 @@ const StoreSwitcher = ({items}: StoreSwitcherProps) => {
         value: item.id
     }))
     const currentStore = formatedItems.find((item) => item.value === params.storeId)
+
+    const onStoreSelect = (store: {value: string, label: string}) => {
+      setOpen(false);
+      router.push(`/${store.value}`);
+    }
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
             <Button
                 variant="outline" size="sm" role='combobox' aria-expanded={open} aria-label='Select a Store'
-                className='w-15 md:w-20 lg:w-35'
+                className='w-45'
             >
-                {currentStore?.label}
+              <Store className='h-4 w-4'/>
+              {currentStore?.label}
+              <ChevronDown className='ml-auto h-4 w-4'/>
             </Button>
         </PopoverTrigger>
         <PopoverContent>
@@ -61,38 +74,32 @@ const StoreSwitcher = ({items}: StoreSwitcherProps) => {
       <CommandInput placeholder="Type a command or search..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Suggestions">
-          <CommandItem>
-            <Calendar />
-            <span>Calendar</span>
+        <CommandGroup heading="Stores">
+
+          {formatedItems.map((store) => (
+            <CommandItem key={store.value} onSelect={()=>onStoreSelect(store)}>
+              <span>{store.label}</span>
+              <Check className={cn(
+                "ml-auto",
+                currentStore?.value === store.value
+                ? "opacity-100"
+                : "opacity-0"
+              )}/>
           </CommandItem>
-          <CommandItem>
-            <Smile />
-            <span>Search Emoji</span>
-          </CommandItem>
-          <CommandItem disabled>
-            <Calculator />
-            <span>Calculator</span>
-          </CommandItem>
+          ))}
+
         </CommandGroup>
         <CommandSeparator />
-        <CommandGroup heading="Settings">
-          <CommandItem>
-            <User />
-            <span>Profile</span>
-            <CommandShortcut>⌘P</CommandShortcut>
-          </CommandItem>
-          <CommandItem>
-            <CreditCard />
-            <span>Billing</span>
-            <CommandShortcut>⌘B</CommandShortcut>
-          </CommandItem>
-          <CommandItem>
-            <Settings />
-            <span>Settings</span>
-            <CommandShortcut>⌘S</CommandShortcut>
-          </CommandItem>
-        </CommandGroup>
+
+          <CommandGroup>
+            <CommandItem onSelect={()=>{
+              setOpen(false)
+              storeModal.onOpen()
+            }}>
+              <span>New Store</span>
+            </CommandItem>
+          </CommandGroup>
+
       </CommandList>
     </Command>
         </PopoverContent>

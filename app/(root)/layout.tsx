@@ -18,7 +18,7 @@ const LayoutRoot = async ({children}:LayoutRootProps) => {
     const store = await prismadb.store.findFirst({
         where: {
             userId,
-        }
+        },
     })
 
     if(store){
