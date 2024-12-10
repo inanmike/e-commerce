@@ -2,9 +2,9 @@ import prismadb from "@/lib/prismadb";
 import { NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 
-export async function GET(req: Request, {params}: {params: {billboardId: string}}){
+export async function GET(req: Request, {params}: {params: {billboardId: string, storeId: string}}){
     try {
-        if(!params.storeId){
+        if(!params.billboardId){
             return new NextResponse("Store id is required", {status:400});
         }
         const billboard = await prismadb.billboard.findUnique({
@@ -42,6 +42,7 @@ export async function DELETE(req: Request, {params}: {params: {billboardId: stri
                 id: await params.billboardId
             }
         })
+        return NextResponse.json(billboard);
     } catch (error) {
         console.log('[BILLBOARD_DELETE]', error)
         return new NextResponse("Interval Error", {status:500})

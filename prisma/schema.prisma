@@ -18,8 +18,8 @@ model Store {
 }
 
 model Billboard{
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  storeId   String
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  storeId   String   @db.ObjectId
   store     Store @relation("StoreToBillboard", fields:[storeId],references: [id])
   label     String
   imageUrl  String

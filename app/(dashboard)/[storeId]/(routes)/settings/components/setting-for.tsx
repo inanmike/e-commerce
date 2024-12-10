@@ -55,7 +55,7 @@ const SettingForms = ({initalData}:SettingFormsProps) => {
             setLoading(false)
         }
     }
-    const onDelete = async (data: SettingFormValues) => {
+    const onDelete = async () => {
         try {
             setLoading(true)
             await axios.delete(`/api/stores/${params.storeId}`)
