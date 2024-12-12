@@ -3,11 +3,11 @@ import React from 'react'
 import BillboardForms from './components/BillboardForms'
 
 
-const BillboardPage = async ({params}: {params: {storeId: string}}) => {
+const BillboardPage = async ({params}: {params: {billboardId: string}}) => {
 
   const billboard = await prismadb.billboard.findUnique({
     where:{
-      id: params.storeId
+      id: params.billboardId
     }
   })
   return (
