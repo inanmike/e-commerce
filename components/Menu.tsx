@@ -19,6 +19,22 @@ const Menu = () => {
             href: `/${params.storeId}/billboards`,
             label: "Billboard",
             active: pathname === `/${params.storeId}/billboard`
+        },
+        {
+            href: `/${params.storeId}/categories`,
+            label: "Category",
+            active: pathname === `/${params.storeId}/categories`
+        }
+        ,
+        {
+            href: `/${params.storeId}/colors`,
+            label: "Color",
+            active: pathname === `/${params.storeId}/colors`
+        },
+        {
+            href: `/${params.storeId}/sizes`,
+            label: "Size",
+            active: pathname === `/${params.storeId}/sizes`
         }
     ]
   return (

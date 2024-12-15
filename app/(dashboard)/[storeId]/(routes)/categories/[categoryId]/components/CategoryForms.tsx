@@ -1,5 +1,4 @@
 'use client'
-import { Billboard } from '@prisma/client'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -15,19 +14,30 @@ import { Input } from '@/components/ui/input'
 import axios from 'axios';
 import toast from 'react-hot-toast'
 import ImageUpload from '@/components/ImageUpload'
-
-interface BillboardFormsProps{
-    initialData: Billboard | null
-}
-
-type BillboardFormValues = z.infer<typeof formSchema>
+import { Billboard, Category } from '@prisma/client'
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+  } from "@/components/ui/select"
 
 const formSchema = z.object({
-    label: z.string().min(2),
-    imageUrl: z.string().min(2)
+    name: z.string().min(2),
+    billboardId: z.string().min(2)
 })
 
-export const BillboardForms = ({initialData}:BillboardFormsProps) => {
+type CategoryFormValues = z.infer<typeof formSchema>
+
+interface CategoryFormsProps{
+    initialData: Category | null
+    billboards : Billboard[]
+}
+
+export const CategoryForms = ({initialData, billboards}:CategoryFormsProps) => {
 
     const params = useParams()
     const router = useRouter()
@@ -37,28 +47,28 @@ export const BillboardForms = ({initialData}:BillboardFormsProps) => {
 
 
 
-    const form = useForm<BillboardFormValues>({
+    const form = useForm<CategoryFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: initialData || {
-            label: '',
-            imageUrl: '',
+            name: '',
+            billboardId: '',
         }
     })
-    const title = initialData ? "Edit Billboard" : "Create Billboard"
-    const description = initialData ? 'Edit a Billboard' : 'Add a new Billboard'
-    const toastMessage = initialData ? 'Billboard Updated' : 'Billboard Created'
+    const title = initialData ? "Edit Category" : "Create Category"
+    const description = initialData ? 'Edit a Category' : 'Add a new Category'
+    const toastMessage = initialData ? 'Category Updated' : 'Category Created'
     const buttonText = initialData ? "Save Changes" : "Create"
 
-const onSubmit = async (data: BillboardFormValues) => {
+const onSubmit = async (data: CategoryFormValues) => {
     try {
         setLoading(true)
         if(initialData){
-            await axios.patch(`/api/${params.storeId}/billboards/${params.billboardId}`, data)
+            await axios.patch(`/api/${params.storeId}/categories/${params.categoryId}`, data)
         }
         else{
-            await axios.post(`/api/${params.storeId}/billboards`, data)
+            await axios.post(`/api/${params.storeId}/categories`, data)
         }
-        router.push(`/${params.storeId}/billboards`);
+        router.push(`/${params.storeId}/categories`);
         router.refresh();
         toast.success(toastMessage);
     } catch (error) {
@@ -106,38 +116,17 @@ const onSubmit = async (data: BillboardFormValues) => {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
 
-            <FormField control={form.control}
-                name='imageUrl'
-                render={({field})=>(
-                    <FormItem>
-                        <FormLabel>Background Image</FormLabel>
-                        <FormControl>
-                            <ImageUpload
-                            value={field.value ? [field.value]: []}
-                            disabled={loading}
-                            onChange={(url) =>field.onChange(url)}
-                            onRemove={() => field.onChange("")}
-                            >
-
-                            </ImageUpload>
-                        </FormControl>
-                        <FormMessage>
-
-                        </FormMessage>
-                    </FormItem>
-                )}/>
-
                 <div className="h-8"></div>
                 
                 <FormField control={form.control}
-                name='label'
+                name='name'
                 render={({field})=>(
                     <FormItem>
-                        <FormLabel>Label</FormLabel>
+                        <FormLabel>Name</FormLabel>
                         <FormControl>
                             <Input 
                             disabled={loading} 
-                            placeholder='Billboard' {...field}>
+                            placeholder='Name' {...field}>
                             </Input>
                         </FormControl>
                         <FormMessage>
@@ -145,6 +134,34 @@ const onSubmit = async (data: BillboardFormValues) => {
                         </FormMessage>
                     </FormItem>
                 )}/>
+
+                <FormField control={form.control}
+                name='billboardId'
+                render={({field})=>(
+                    <FormItem>
+                        <FormLabel>Billboard</FormLabel>
+                        <Select 
+                            disabled={loading} 
+                            onValueChange={field.onChange} 
+                            value={field.value} 
+                            defaultValue={field.value}>
+                            <SelectTrigger className="w-full">
+                                <SelectValue defaultValue={field.value} placeholder="Select a Billboard" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    {billboards.map((billboard)=> (
+                                        <SelectItem key={billboard.id} value={billboard.id}>
+                                            {billboard.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                        <FormMessage/>
+                    </FormItem>
+                )}/>
+
                 <Button
                 disabled={loading} 
                 variant={"default"} 
@@ -161,4 +178,4 @@ const onSubmit = async (data: BillboardFormValues) => {
   )
 }
 
-export default BillboardForms
+export default CategoryForms
