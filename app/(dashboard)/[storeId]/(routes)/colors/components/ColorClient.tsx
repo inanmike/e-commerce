@@ -9,13 +9,13 @@ import { Plus } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 
 import React, { useState } from 'react'
-import { BillboardColumn, columns } from './columns'
+import { ColorColumn, columns } from './columns'
 
-interface BillboardClientProps{
-  data:BillboardColumn[];
+interface ColorsClientProps{
+  data:ColorColumn[];
 }
 
-const BillboardClient = ({data}: BillboardClientProps) => {
+const ColorClient = ({data}: ColorsClientProps) => {
     const params = useParams()
     const router = useRouter()
 
@@ -25,23 +25,23 @@ const BillboardClient = ({data}: BillboardClientProps) => {
   return (
     <>
       <div className="flex items-center justify-between">
-              <HeaderTitle title={`Billboard ( ${data.length} )`} description='Manage Billboard Panel'></HeaderTitle>
+              <HeaderTitle title={`Colors ( ${data.length} )`} description='Manage colors for your store'></HeaderTitle>
               <Button disabled={loading} 
               variant="default" 
               size="sm" 
-              onClick={()=>router.push(`/${params.storeId}/billboards/new`)}
+              onClick={()=>router.push(`/${params.storeId}/colors/new`)}
               >
                   <Plus className='h-4 w-4 mr-2'/>
-                  Add Billboard
+                  Add color
               </Button>
       </div>
       <Separator className='my-3'></Separator>
       <DataTable searchkey='label' data={data} columns={columns}/>
-      <ApiList name='billboards' Idname='billboardId'/>
+      <ApiList name='colors' Idname='colorId'/>
     </>
     
     
   )
 }
 
-export default BillboardClient
+export default ColorClient

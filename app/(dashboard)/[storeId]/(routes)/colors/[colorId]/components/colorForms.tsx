@@ -1,5 +1,5 @@
 'use client'
-import { Billboard } from '@prisma/client'
+import { Color } from '@prisma/client'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -16,18 +16,20 @@ import axios from 'axios';
 import toast from 'react-hot-toast'
 import ImageUpload from '@/components/ImageUpload'
 
-interface BillboardFormsProps{
-    initialData: Billboard | null
+interface ColorFormsProps{
+    initialData: Color | null
 }
 
-type BillboardFormValues = z.infer<typeof formSchema>
+type ColorFormValues = z.infer<typeof formSchema>
 
 const formSchema = z.object({
-    label: z.string().min(2),
-    imageUrl: z.string().min(2)
+    name: z.string().min(2),
+    value: z.string().min(4).regex(/^#/, {
+        message: "Color value must be a valid hex color code starting with '#' (e.g., #FF0000)"
+    })
 })
 
-export const BillboardForms = ({initialData}:BillboardFormsProps) => {
+export const ColorForms = ({initialData}:ColorFormsProps) => {
 
     const params = useParams()
     const router = useRouter()
@@ -37,28 +39,28 @@ export const BillboardForms = ({initialData}:BillboardFormsProps) => {
 
 
 
-    const form = useForm<BillboardFormValues>({
+    const form = useForm<ColorFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: initialData || {
-            label: '',
-            imageUrl: '',
+            name: '',
+            value: '',
         }
     })
-    const title = initialData ? "Edit Billboard" : "Create Billboard"
-    const description = initialData ? 'Edit a Billboard' : 'Add a new Billboard'
-    const toastMessage = initialData ? 'Billboard Updated' : 'Billboard Created'
+    const title = initialData ? "Edit color" : "Create color"
+    const description = initialData ? 'Edit a color' : 'Add a new color'
+    const toastMessage = initialData ? 'color Updated' : 'color Created'
     const buttonText = initialData ? "Save Changes" : "Create"
 
-const onSubmit = async (data: BillboardFormValues) => {
+const onSubmit = async (data: ColorFormValues) => {
     try {
         setLoading(true)
         if(initialData){
-            await axios.patch(`/api/${params.storeId}/billboards/${params.billboardId}`, data)
+            await axios.patch(`/api/${params.storeId}/colors/${params.colorId}`, data)
         }
         else{
-            await axios.post(`/api/${params.storeId}/billboards`, data)
+            await axios.post(`/api/${params.storeId}/colors`, data)
         }
-        router.push(`/${params.storeId}/billboards`);
+        router.push(`/${params.storeId}/colors`);
         router.refresh();
         toast.success(toastMessage);
     } catch (error) {
@@ -106,38 +108,17 @@ const onSubmit = async (data: BillboardFormValues) => {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
 
-            <FormField control={form.control}
-                name='imageUrl'
-                render={({field})=>(
-                    <FormItem>
-                        <FormLabel>Background Image</FormLabel>
-                        <FormControl>
-                            <ImageUpload
-                            value={field.value ? [field.value]: []}
-                            disabled={loading}
-                            onChange={(url) =>field.onChange(url)}
-                            onRemove={() => field.onChange("")}
-                            >
-
-                            </ImageUpload>
-                        </FormControl>
-                        <FormMessage>
-
-                        </FormMessage>
-                    </FormItem>
-                )}/>
-
                 <div className="h-8"></div>
                 
                 <FormField control={form.control}
-                name='label'
+                name='value'
                 render={({field})=>(
                     <FormItem>
-                        <FormLabel>Label</FormLabel>
+                        <FormLabel>Value</FormLabel>
                         <FormControl>
                             <Input 
                             disabled={loading} 
-                            placeholder='Billboard' {...field}>
+                            placeholder='Enter Value' {...field}>
                             </Input>
                         </FormControl>
                         <FormMessage>
@@ -145,6 +126,24 @@ const onSubmit = async (data: BillboardFormValues) => {
                         </FormMessage>
                     </FormItem>
                 )}/>
+
+                <FormField control={form.control}
+                name='name'
+                render={({field})=>(
+                    <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                            <Input 
+                            disabled={loading} 
+                            placeholder='Enter Name' {...field}>
+                            </Input>
+                        </FormControl>
+                        <FormMessage>
+
+                        </FormMessage>
+                    </FormItem>
+                )}/>
+
                 <Button
                 disabled={loading} 
                 variant={"default"} 
@@ -161,4 +160,4 @@ const onSubmit = async (data: BillboardFormValues) => {
   )
 }
 
-export default BillboardForms
+export default ColorForms

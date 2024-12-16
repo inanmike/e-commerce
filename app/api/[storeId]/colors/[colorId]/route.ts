@@ -2,10 +2,10 @@ import prismadb from "@/lib/prismadb";
 import { NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 
-export async function GET(req: Request, {params}: {params: {colorId: string, storeId: string}}){
+export async function GET(req: Request, {params}: {params: {colorId: string}}){
     try {
-        if(!params.storeId){
-            return new NextResponse("Store id is required", {status:400});
+        if(!params.colorId){
+            return new NextResponse("Color id is required", {status:400});
         }
         const color = await prismadb.color.findUnique({
             where:{
@@ -14,7 +14,7 @@ export async function GET(req: Request, {params}: {params: {colorId: string, sto
         })
         return NextResponse.json(color);
     } catch (error) {
-        console.log('[color_GET]', error)
+        console.log('[COLOR_GET]', error)
         return new NextResponse("Interval Error", {status:500})
     }
 }
@@ -26,7 +26,7 @@ export async function DELETE(req: Request, {params}: {params: {colorId: string, 
             return new NextResponse("Unauthorized", {status:403});
         }
         if(!params.colorId){
-            return new NextResponse("color id is required", {status:400});
+            return new NextResponse("Color id is required", {status:400});
         }
         const storeByUserId = await prismadb.store.findFirst({
             where:{
@@ -39,12 +39,12 @@ export async function DELETE(req: Request, {params}: {params: {colorId: string, 
         }
         const color = await prismadb.color.delete({
             where : {
-                id: await params.colorId
+                id: params.colorId
             }
         })
         return NextResponse.json(color);
     } catch (error) {
-        console.log('[color_DELETE]', error)
+        console.log('[COLOR_DELETE]', error)
         return new NextResponse("Interval Error", {status:500})
     }
 }
@@ -67,7 +67,7 @@ export async function PATCH(req: Request, {params}: {params: {colorId: string, s
             return new NextResponse("Image Url is required", {status:400});
         }
         if(!params.colorId){
-            return new NextResponse("color id is required", {status:400});
+            return new NextResponse("Color id is required", {status:400});
         }
         const storeByUserId = await prismadb.store.findFirst({
             where:{
@@ -90,7 +90,7 @@ export async function PATCH(req: Request, {params}: {params: {colorId: string, s
         })
         return NextResponse.json(color);
     } catch (error) {
-        console.log('[color_UPDATE]', error)
+        console.log('[COLOR_UPDATE]', error)
         return new NextResponse("Interval Error", {status:500})
     }
 }
