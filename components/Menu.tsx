@@ -36,6 +36,12 @@ const Menu = () => {
             label: "Size",
             active: pathname === `/${params.storeId}/sizes`
         }
+        ,
+        {
+            href: `/${params.storeId}/products`,
+            label: "Products",
+            active: pathname === `/${params.storeId}/products`
+        }
     ]
   return (
     <nav className='mx-4 flex items-center space-x-4'>

@@ -1,11 +1,11 @@
 import prismadb from '@/lib/prismadb'
 import React from 'react'
-import ColorForms from './components/colorForms'
+import SizeForms from './components/sizeForms'
 
 
-const ColorPage = async ({params}: {params: {storeId: string}}) => {
+const SizePage = async ({params}: {params: {storeId: string}}) => {
 
-  const color = await prismadb.color.findUnique({
+  const size = await prismadb.size.findUnique({
     where:{
       id: params.storeId
     }
@@ -13,10 +13,10 @@ const ColorPage = async ({params}: {params: {storeId: string}}) => {
   return (
     <div className='flex-col'>
       <div className="flex-1 space-y-5 p-8 pt-6">
-        <ColorForms initialData={color}/>
+        <SizeForms initialData={size}/>
       </div>
     </div>
   )
  }
 
-export default ColorPage
+export default SizePage
