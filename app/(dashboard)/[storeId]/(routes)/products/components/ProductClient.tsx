@@ -36,7 +36,7 @@ const ProductClient = ({data}: ProductClientProps) => {
               </Button>
       </div>
       <Separator className='my-3'></Separator>
-      <DataTable searchkey='label' data={data} columns={columns}/>
+      <DataTable searchkey='name' data={data} columns={columns}/>
       <ApiList name='products' Idname='productId'/>
     </>
     

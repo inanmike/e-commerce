@@ -45,7 +45,7 @@ const CellAction = ({data}:CellActionProps) => {
         }
     }
     const onCopy = (id: string) => {
-        navigator.clipboard.writeText(data.id)
+        navigator.clipboard.writeText(id)
         toast.success('size Copied Successfully')
     }
   return (

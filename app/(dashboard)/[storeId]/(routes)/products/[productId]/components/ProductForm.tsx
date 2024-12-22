@@ -40,7 +40,7 @@ type ProductFormValues = z.infer<typeof formSchema>
 const formSchema = z.object({
     name: z.string().min(2),
     images: z.object({url : z.string()}).array(),
-    price: z.number().min(1),
+    price: z.coerce.number().min(1),
     categoryId: z.string().min(1),
     colorId: z.string().min(1),
     sizeId: z.string().min(1),
@@ -62,7 +62,7 @@ export const ProductForms = ({initialData, categories, colors, sizes}:ProductFor
         resolver: zodResolver(formSchema),
         defaultValues: initialData ? {
             ...initialData,
-            price: parseFloat(String(initialData?.price))
+            price:parseFloat(String(initialData?.price)),
         } : {
             name: '',
             images: [],
@@ -83,12 +83,12 @@ const onSubmit = async (data: ProductFormValues) => {
     try {
         setLoading(true)
         if(initialData){
-            await axios.patch(`/api/${params.storeId}/Products/${params.ProductId}`, data)
+            await axios.patch(`/api/${params.storeId}/products/${params.productId}`, data)
         }
         else{
-            await axios.post(`/api/${params.storeId}/Products`, data)
+            await axios.post(`/api/${params.storeId}/products`, data)
         }
-        router.push(`/${params.storeId}/Products`);
+        router.push(`/${params.storeId}/products`);
         router.refresh();
         toast.success(toastMessage);
     } catch (error) {
@@ -101,11 +101,16 @@ const onSubmit = async (data: ProductFormValues) => {
   const onDelete = async () => {
     try {
         setLoading(true)
+        await axios.delete(`/api/${params.storeId}/products/${params.productId}`)
+        router.refresh()
+        router.push(`/${params.storeId}/products`)
+        toast.success("Product deleted successfully")
     } catch (error) {
         toast.error("Something went wrong")
     }
     finally {
         setLoading(false)
+        setOpen(false)
     }
   }
   return (
@@ -184,7 +189,7 @@ const onSubmit = async (data: ProductFormValues) => {
                             <Input 
                             type='number'
                             disabled={loading} 
-                            placeholder='150' {...field}>
+                            placeholder='1000' {...field}>
                             </Input>
                         </FormControl>
                         <FormMessage>
@@ -301,6 +306,23 @@ const onSubmit = async (data: ProductFormValues) => {
                     </FormItem>
                 )}/>
 
+                <FormField control={form.control}
+                name='isArchived'
+                render={({field})=>(
+                    <FormItem className='flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4'>
+                        <FormControl>
+                            <Checkbox
+                                checked={field.value}
+                                // @ts-ignore
+                                onCheckedChange={field.onChange}
+                            />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                            <FormLabel>Archived</FormLabel>
+                            <FormDescription>This product will not anywhere in the store</FormDescription>
+                        </div>
+                    </FormItem>
+                )}/>
                 <Button
                 disabled={loading} 
                 variant={"default"} 

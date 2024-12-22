@@ -2,7 +2,6 @@ import React from 'react'
 import prismadb from '@/lib/prismadb'
 import { formatter } from '@/lib/utils';
 import { ProductColumn } from './components/columns'
-
 import { format } from "date-fns";
 import ProductClient from './components/ProductClient';
 
@@ -30,7 +29,7 @@ const ProductsPage = async({params}: {params: {storeId: string}}) => {
     isArchived: item.isArchived,
     price: formatter.format(item.price),
     category: item.category.name,
-    size: item.category.name,
+    size: item.size.name,
     color: item.color.value,
     createAt: format(item.createAt, 'yyyy-MM-dd hh:mm:ss'),
   }))

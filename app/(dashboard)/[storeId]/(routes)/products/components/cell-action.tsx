@@ -12,14 +12,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { BillboardColumn } from './columns'
+import { ProductColumn } from './columns'
 import AlertModal from '@/components/modals/alert-modal'
 import toast from 'react-hot-toast'
 import { useParams, useRouter } from 'next/navigation'
 import axios from 'axios'
 
 interface CellActionProps{
-    data: BillboardColumn
+    data: ProductColumn
 }
 
 const CellAction = ({data}:CellActionProps) => {
@@ -33,8 +33,8 @@ const CellAction = ({data}:CellActionProps) => {
     const onDelete = async() =>{
         try {
             setLoading(true)
-            await axios.delete(`/api/${params.storeId}/billboards/${data.id}`)
-            toast.success('Billboard deleted')
+            await axios.delete(`/api/${params.storeId}/products/${data.id}`)
+            toast.success('Product deleted')
             router.refresh()
         } catch (error) {
             toast.error('Something went wrong')
@@ -45,8 +45,8 @@ const CellAction = ({data}:CellActionProps) => {
         }
     }
     const onCopy = (id: string) => {
-        navigator.clipboard.writeText(data.id)
-        toast.success('Billboard Copied Successfully')
+        navigator.clipboard.writeText(id)
+        toast.success('Product Copied Successfully')
     }
   return (
     <>
@@ -71,7 +71,7 @@ const CellAction = ({data}:CellActionProps) => {
               Copy Data ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={()=> router.push(`/${params.storeId}/billboards/${data.id}`)}>Update</DropdownMenuItem>
+            <DropdownMenuItem onClick={()=> router.push(`/${params.storeId}/products/${data.id}`)}>Update</DropdownMenuItem>
             <DropdownMenuItem onClick={()=> setOpen(true)}>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
